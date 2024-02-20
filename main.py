@@ -1,18 +1,28 @@
 from fpdf import FPDF
 import pandas as pd
-pdf = FPDF(orientation='p',unit='mm',format='a4')
+pdf = FPDF(orientation='p', unit='mm', format='a4')
+#toavoid geting content out of the pages
+pdf.set_auto_page_break(auto=False)
 
 df=pd.read_csv("topics.csv")
+def footer():
+    pdf.set_font(family='Times',style='IB',size=10)
+    pdf.set_text_color(130,130,130)
+    pdf.cell(w=0,txt=item['Topic'],ln=1,align='R')
 
-for index,item in df.iterrows():
+for index, item in df.iterrows():
     pdf.add_page()
     pdf.set_font(family='Times',style='B',size=24)
     pdf.set_text_color(100,100,100) #gray color
     pdf.cell(w=0,h=10,txt=item["Topic"],ln=1,align='L')
     pdf.line(10,21,200,21)
+    pdf.ln(258) #EMPTY BREAKLINES
+    footer()
     if int(item["Pages"]) !=1: #adding pages
         for i in range(int(item["Pages"])-1):
             pdf.add_page()
+            pdf.ln(268)
+            footer()
 
 
 pdf.output('output.pdf')
